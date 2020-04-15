@@ -6,23 +6,20 @@ interface IConfig {
   desktop: number;
 }
 
-const config: IConfig = {
-  mobile: 500,
-  tablet: 700,
-  desktop: 1000
-}
 @Directive({
   selector: '[appOnlyForScreen]'
 })
 export class OnlyForScreenDirective {
   // @Input() screenSize: string;
   @Input() onlyForScreen: string;
+  config: IConfig = {
+    mobile: 500,
+    tablet: 700,
+    desktop: 1000
+  }
 
   // @Input() highlightColor: string;
   innerWidth: number;
-
-
-
 
   constructor(private el: ElementRef) { }
 
@@ -35,17 +32,17 @@ export class OnlyForScreenDirective {
 
 
   private screenRes(screenSize: number) {
-    if (this.onlyForScreen === 'mobile' && screenSize < config.mobile) {
-      console.log('mobile', screenSize)
-      return this.el.nativeElement.style.display = 'block';
-    } else if (this.onlyForScreen === 'tablet' && screenSize < config.tablet) {
-      return this.el.nativeElement.style.display = 'block';
+    if ((this.onlyForScreen === 'mobile') && (screenSize < this.config.mobile)) {
+      console.log('mobile', this.config.mobile)
+      this.el.nativeElement.style.display = 'block';
+    } else if ((this.onlyForScreen === 'tablet') && (screenSize < this.config.tablet)) {
+      this.el.nativeElement.style.display = 'block';
     }
-    else if (this.onlyForScreen === 'desktop' && screenSize < config.desktop) {
-      return this.el.nativeElement.style.display = 'block';
+    else if ((this.onlyForScreen === 'desktop') && (screenSize < this.config.desktop)) {
+      this.el.nativeElement.style.display = 'block';
     }
     else {
-      return this.el.nativeElement.style.display = 'none';
+      this.el.nativeElement.style.display = 'none';
     }
   }
 }

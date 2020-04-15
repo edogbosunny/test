@@ -1,4 +1,5 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 interface IConfig {
   mobile: number;
@@ -9,8 +10,9 @@ interface IConfig {
 @Directive({
   selector: '[appOnlyForScreen]'
 })
+
 export class OnlyForScreenDirective {
-  // @Input() screenSize: string;
+
   @Input() onlyForScreen: string;
   config: IConfig = {
     mobile: 500,
@@ -31,18 +33,26 @@ export class OnlyForScreenDirective {
   }
 
 
+  setDisplay(el: ElementRef, display = 'block') {
+    el.nativeElement.style.display = display || 'none'
+  }
+
   private screenRes(screenSize: number) {
-    if ((this.onlyForScreen === 'mobile') && (screenSize < this.config.mobile)) {
-      console.log('mobile', this.config.mobile)
-      this.el.nativeElement.style.display = 'block';
-    } else if ((this.onlyForScreen === 'tablet') && (screenSize < this.config.tablet)) {
-      this.el.nativeElement.style.display = 'block';
+    var child = this.el.nativeElement;
+    if ((screenSize < this.config.mobile)) {
+      (this.onlyForScreen !== 'mobile')
+        ? this.setDisplay(this.el, 'none')
+        : this.setDisplay(this.el)
+    } else if ((screenSize < this.config.tablet)) {
+      (this.onlyForScreen !== 'tablet')
+        ? this.setDisplay(this.el, 'none')
+        : this.setDisplay(this.el)
+      console.log('tab')
     }
-    else if ((this.onlyForScreen === 'desktop') && (screenSize < this.config.desktop)) {
-      this.el.nativeElement.style.display = 'block';
-    }
-    else {
-      this.el.nativeElement.style.display = 'none';
+    else  {
+      (this.onlyForScreen !== 'desktop')
+        ? this.setDisplay(this.el, 'none')
+        : this.setDisplay(this.el)
     }
   }
 }
